@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movimientos migratorios</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#f5f7fb;
+  color:#172033;
+}
+
+.wrap{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+h1{
+  font-size:32px;
+}
+
+.panel{
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  margin-bottom:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.05);
+}
+
+.exercise{
+  border:1px solid #ddd;
+  padding:15px;
+  border-radius:15px;
+  margin-bottom:15px;
+}
+
+button{
+  padding:10px 14px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.btn{
+  background:#0f172a;
+  color:white;
+}
+
+.btn-soft{
+  background:#e7ecf8;
+}
+
+.feedback{
+  margin-top:10px;
+  padding:10px;
+  border-radius:10px;
+  display:none;
+}
+
+.ok{background:#d1fae5; display:block;}
+.bad{background:#fee2e2; display:block;}
+
+.progress{
+  background:#ddd;
+  height:10px;
+  border-radius:20px;
+  overflow:hidden;
+  margin-bottom:20px;
+}
+
+.fill{
+  height:100%;
+  width:0%;
+  background:#2563eb;
+}
+
+.error{
+  background:#fff0f0;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<h1>Movimientos migratorios</h1>
+
+<!-- BOTÓN PODCAST -->
+<div class="panel">
+<h3>🎧 Podcast</h3>
+
+<button class="btn-soft"
+onclick="window.open('https://drive.google.com/file/d/1UEP-1t0cnC_HWix7Ry_9iEt1UIpQMybK/view','_blank')">
+ESCUCHAR PODCAST
+</button>
+
+</div>
+
+<!-- PROGRESO -->
+<div class="panel">
+<div id="text">0 / 3 correctas</div>
+<div class="progress">
+<div class="fill" id="bar"></div>
+</div>
+</div>
+
+<!-- EJERCICIO 1 -->
+<div class="panel exercise">
+<p><b>Noticia:</b> Llegan personas a España desde África buscando trabajo.</p>
+
+<p>¿Tipo de migración?</p>
+
+<label><input type="radio" name="q1" value="a"> Interior</label><br>
+<label><input type="radio" name="q1" value="b"> Exterior</label><br>
+
+<br>
+
+<button class="btn" onclick="q1()">COMPROBAR</button>
+
+<div id="f1" class="feedback"></div>
+</div>
+
+<!-- EJERCICIO 2 -->
+<div class="panel exercise">
+<p><b>Noticia:</b> No encuentran empleo en su país.</p>
+
+<p>¿Causa?</p>
+
+<label><input type="radio" name="q2" value="a"> Económica</label><br>
+<label><input type="radio" name="q2" value="b"> Turística</label><br>
+
+<br>
+
+<button class="btn" onclick="q2()">COMPROBAR</button>
+
+<div id="f2" class="feedback"></div>
+</div>
+
+<!-- EJERCICIO 3 -->
+<div class="panel exercise">
+<p><b>Escribe:</b></p>
+
+<input id="q3" placeholder="Es una migración...">
+
+<br><br>
+
+<button class="btn" onclick="q3()">COMPROBAR</button>
+
+<div id="f3" class="feedback"></div>
+</div>
+
+<!-- ERRORES -->
+<div class="panel">
+<h3>Errores</h3>
+<div id="errors"></div>
+</div>
+
+</div>
+
+<script>
+
+let ok = {q1:false,q2:false,q3:false};
+let errors = {};
+
+function update(){
+let count = Object.values(ok).filter(v=>v).length;
+document.getElementById("text").innerText = count+" / 3 correctas";
+document.getElementById("bar").style.width = (count/3*100)+"%";
+}
+
+function addError(id,msg){
+errors[id]=msg;
+renderErrors();
+}
+
+function removeError(id){
+delete errors[id];
+renderErrors();
+}
+
+function renderErrors(){
+let box=document.getElementById("errors");
+box.innerHTML="";
+
+for(let e in errors){
+box.innerHTML+=`<div class="error">${errors[e]}</div>`;
+}
+}
+
+function q1(){
+let v=document.querySelector('input[name="q1"]:checked');
+if(!v){
+addError("q1","Ej1: debes elegir opción");
+return;
+}
+if(v.value=="b"){
+ok.q1=true;
+removeError("q1");
+f1.className="feedback ok";
+f1.innerText="Correcto";
+}else{
+ok.q1=false;
+addError("q1","Ej1: es migración exterior");
+f1.className="feedback bad";
+f1.innerText="Incorrecto";
+}
+update();
+}
+
+function q2(){
+let v=document.querySelector('input[name="q2"]:checked');
+if(!v){
+addError("q2","Ej2: selecciona causa");
+return;
+}
+if(v.value=="a"){
+ok.q2=true;
+removeError("q2");
+f2.className="feedback ok";
+f2.innerText="Correcto";
+}else{
+ok.q2=false;
+addError("q2","Ej2: causa económica");
+f2.className="feedback bad";
+f2.innerText="Incorrecto";
+}
+update();
+}
+
+function q3(){
+let v=document.getElementById("q3").value.toLowerCase();
+if(v.includes("exterior")){
+ok.q3=true;
+removeError("q3");
+f3.className="feedback ok";
+f3.innerText="Bien";
+}else{
+ok.q3=false;
+addError("q3","Ej3: escribe 'migración exterior'");
+f3.className="feedback bad";
+f3.innerText="Incorrecto";
+}
+update();
+}
+
+</script>
+
+</body>
+</html>
